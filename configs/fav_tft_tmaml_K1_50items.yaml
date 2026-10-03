@@ -1,0 +1,37 @@
+dataset:
+  name: favorita
+  meta_train_path: data/favorita/meta_sets/Seed42_store47_itemBased_meta_train_cumulative_50items_3107.pkl
+  meta_val_path: data/favorita/meta_sets/Seed42_store47_itemBased_meta_val_500items_3107.pkl
+  max_encoder_length: 28
+  min_encoder_length: 0
+  max_prediction_length: 28
+  min_prediction_length: 28
+  randomize_length: false
+  split_threshold: 306
+
+model:
+  name: tft
+  hidden_size: 240
+  attention_head_size: 4
+  dropout: 0.1
+  output_size: 9
+  optimizer: ranger
+  learning_rate: 0.001
+  anonymize_series_id: true
+
+method: tmaml
+
+tmaml:
+  max_epochs: 150
+  K_support: 1
+  inner_lr: 0.001
+  outer_lr: 0.0001
+  inner_steps: 10
+  meta_batch_size: 128
+  inner_grad_clip: 100
+  support_window_size: 28
+  sampling: entity_diverse
+  unified_support: true
+  val_check_interval: 5
+
+tag: "50items_ilr0.001_olr0.0001_MB128_IS10"

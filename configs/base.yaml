@@ -1,0 +1,98 @@
+# ============================================================================
+# base.yaml — DEFAULTS for every run.
+#
+# Every experiment file (configs/<name>.yaml) is deep-merged ON TOP of this file:
+# keys the experiment sets win, everything it omits keeps the value below.
+# So this file is the single place to see "what knobs exist and their defaults".
+#
+# An experiment file therefore only needs to list what DIFFERS from these values
+# (typically: the dataset paths, maybe the model name, and which method to run).
+# ============================================================================
+
+seed: 42
+
+# Optional free-text label appended to the auto-derived run name (and checkpoint
+# filename). Leave empty for the plain name. e.g. tag: "ingrad0.05" ->
+# run name "electricity_tft_tmaml_K2_ingrad0.05". Applies to ERM and TMAML.
+tag: ""
+
+# ----------------------------------------------------------------------------
+# DATASET axis  ->  core/data/registry.py :: build_dataset(cfg["dataset"])
+# ----------------------------------------------------------------------------
+dataset:
+  name: electricity            # which builder: "electricity" | "favorita" | "m5"
+  meta_train_path: ""          # set per experiment
+  meta_val_path: null          # set per experiment, or leave null
+
+  # Length args are OPTIONAL and dataset-specific. If you omit them, each dataset
+  # falls back to its own correct defaults, so only set them here when you want to override that dataset's default.
+  max_encoder_length: null
+  max_prediction_length: null
+  min_encoder_length: null
+  min_prediction_length: null
+  randomize_length: null
+  split_threshold: 304          # Favorita/M5-only: train/val time_idx cutoff (ignored by electricity)
+  target: power_usage           # electricity-only: target column name. Default matches the old
+                                 
+
+# ----------------------------------------------------------------------------
+# MODEL axis  ->  core/models/registry.py :: build_model(cfg["model"], base_ds)
+# ----------------------------------------------------------------------------
+model:
+  name: tft                    # which builder: "tft" (see core/models/registry.py to add more)
+  hidden_size: 160
+  attention_head_size: 4
+  optimizer: ranger
+  anonymize_series_id: true    # shrink traj_id embedding to dim 1
+  dropout: 0.1
+  output_size: 9               # number of quantiles; loss is derived to match
+  learning_rate: 0.001
+
+# ----------------------------------------------------------------------------
+# TRAINING PROCEDURE axis
+# `method` is just a selector string. The runner reads ONLY the matching block
+# below, so the unused block is harmless. ERM and TMAML share no hyperparameters.
+# ----------------------------------------------------------------------------
+method: erm                    # "erm" | "tmaml"
+
+erm:                           # plain supervised training (core/training/erm.py)
+  max_epochs: 500
+  gradient_clip_val: 0.01
+  batch_size: 64
+  early_stopping_patience: 100
+  val_check_interval: 5
+
+tmaml:                         # meta-learning procedure (core/training/tmaml.py)
+  max_epochs: 150
+  K_support: 2
+  inner_lr: 0.001
+  outer_lr: 0.0001
+  inner_steps: 5
+  inner_grad_clip: 0.01        # the main knob to tune
+  support_window_size: 24
+  sampling: entity_diverse     # "entity_diverse" | "none"
+  unified_support: true
+  val_check_interval: 5
+
+# ----------------------------------------------------------------------------
+# EVALUATION  ->  core/evaluation/k_shot.py :: run_k_shot(cfg)
+# Used by scripts/evaluate.py, NOT by training. An eval config inherits the
+# dataset+model blocks from the checkpoint's saved <run_name>.config.yaml and
+# then merges its own `eval:` block on top (see core/config.load_eval_config).
+# Values below match the electricity runs in run_k_shot.sh / k_shot_test.py.
+# ----------------------------------------------------------------------------
+eval:
+  test_data: ""                # held-out meta-test pickle; set per experiment
+  results_dir: null            # null -> derived: data/meta_test_results/<dataset>/k_shot
+  run_name: null               # null -> the checkpoint's run name (make_run_name); K is appended per result
+  use_wandb: false             # log per-K averages to wandb
+  K: [1, 2, 3, 4]              # K-shot levels to test (one result file per K)
+  adaptation_steps: 5          # gradient steps per support window
+  adaptation_lr: 0.001         # inner-loop adaptation LR at test time
+  support_window_size: 24      # S; size of each support window
+  inner_grad_clip: 0.01        # grad-norm clip during adaptation (null disables)
+  unified_support: true        # one support set over K*S steps vs K per-window sets
+  anonymize_series_id: true    # dummy traj_id in support/query (match TMAML training)
+  take_last_as_query: true     # use the last meta-window as the query
+  save_predictions: false      # opt-in: also persist each series' final raw predicted-
+  # is_maml:                   # omit -> inferred from the run's method / auto-detected

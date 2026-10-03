@@ -1,0 +1,30 @@
+dataset:
+  name: electricity
+  meta_train_path: data/electricity/meta_sets/Seed42_electricity_seriesBased_meta_train_cumulative_20ids_0508.pkl
+  target: log_power_usage
+  max_encoder_length: 144
+  min_encoder_length: 144
+  max_prediction_length: 24
+  min_prediction_length: 24
+  randomize_length: false
+
+model:
+  name: tft
+  hidden_size: 160
+  attention_head_size: 4
+  dropout: 0.1
+  output_size: 9
+  optimizer: adam
+  learning_rate: 0.001
+  anonymize_series_id: true
+
+method: erm
+
+erm:
+  max_epochs: 500
+  gradient_clip_val: 0.01
+  batch_size: 64
+  early_stopping_patience: 100
+  val_check_interval: 5
+
+tag: "K6_20ids_unnorm_log1p_adam"

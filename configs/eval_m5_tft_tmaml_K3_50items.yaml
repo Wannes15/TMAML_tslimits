@@ -1,0 +1,12 @@
+checkpoint: data/checkpoints/m5/tft_tmaml/m5_tft_tmaml_K3_50items_ilr0.001_olr0.0001_MB50_IS10_00-0.3514.ckpt
+
+eval:
+  is_maml: true
+  run_name: "m5_tft_tmaml_K3_50items_metatest"
+  test_data: data/M5/meta_sets/Seed42_CA_itemBased_meta_test_1000items_volfilt0508.pkl
+  K: [3]
+  support_window_size: 28
+  adaptation_steps: 10
+  adaptation_lr: 0.001
+  inner_grad_clip: 100
+

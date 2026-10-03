@@ -1,0 +1,12 @@
+checkpoint: data/checkpoints/favorita/tft_erm/favorita_tft_erm_K0_50items_inclstatcat_adam_06-0.3788.ckpt
+
+eval:
+  is_maml: false
+  run_name: "favorita_tft_erm_K0_50items_inclstatcat_adam_metatest"
+  test_data: data/favorita/meta_sets/Seed42_store47_itemBased_meta_test_1000items_3107.pkl
+  K: [0]
+  support_window_size: 28
+
+  adaptation_steps: 10
+  inner_grad_clip: 100
+

@@ -1,0 +1,30 @@
+dataset:
+  name: favorita
+  meta_train_path: data/favorita/meta_sets/Seed42_store47_itemBased_meta_train_cumulative_50items_3107.pkl
+  max_encoder_length: 0
+  min_encoder_length: 0
+  max_prediction_length: 28
+  min_prediction_length: 28
+  randomize_length: false
+  split_threshold: 306
+
+model:
+  name: tft
+  hidden_size: 240
+  attention_head_size: 4
+  dropout: 0.1
+  output_size: 9
+  optimizer: adam
+  learning_rate: 0.001
+  anonymize_series_id: true
+
+method: erm
+
+erm:
+  max_epochs: 500
+  gradient_clip_val: 100
+  batch_size: 128
+  early_stopping_patience: 100
+  val_check_interval: 5
+
+tag: "K0_50items_inclstatcat_adam"

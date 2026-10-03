@@ -1,0 +1,13 @@
+checkpoint: data/checkpoints/electricity/tft_tmaml/electricity_tft_tmaml_K0_20ids_ilr0.001_olr0.001_MB20_IS10_00-0.9971.ckpt
+
+eval:
+  is_maml: true
+  run_name: "electricity_tft_tmaml_K0_20ids_200test_noclip_metatest"
+  test_data: data/electricity/meta_sets/Seed42_electricity_seriesBased_meta_test_200ids_volfilt0708.pkl
+  K: [0]
+  support_window_size: 24
+
+  adaptation_lr: 0.001
+  inner_grad_clip: null
+  adaptation_steps: 10
+

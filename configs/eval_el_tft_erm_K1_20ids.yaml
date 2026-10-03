@@ -1,0 +1,13 @@
+checkpoint: data/checkpoints/electricity/tft_erm/electricity_tft_erm_K1_20ids_unnorm_log1p_adam_00-0.1053.ckpt
+
+eval:
+  is_maml: false
+  run_name: "electricity_tft_erm_K1_20ids_200test_noclip_metatest"
+  test_data: data/electricity/meta_sets/Seed42_electricity_seriesBased_meta_test_200ids_volfilt0708.pkl
+  K: [1]
+  support_window_size: 24
+
+  adaptation_lr: 0.001
+  inner_grad_clip: null
+  adaptation_steps: 10
+
