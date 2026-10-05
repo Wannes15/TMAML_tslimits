@@ -95,13 +95,20 @@ due to size (753M); get in touch for access, or check back for hosting
   keeps the model-builder registry so a new architecture is one `build_*`
   function + one registry entry away, but nothing else is wired in.
 
-<!-- ## Citation
+## Citation
 
 If you use this code or methodology in your research, please cite our paper:
 
 ```bibtex
-
-``` -->
+@inproceedings{
+   janssens2026tmaml,
+   title={{TMAML}: Temporal Model-Agnostic Meta-Learning for Cold-Start Time Series Forecasting},
+   author={Wannes Janssens and Matthias Bogaert and Dirk Van den Poel},
+   booktitle={Workshop TS-LIMITS @NeurIPS 2026 -- Generalization for Time Series in Tight Settings: Latency, Inference, Memory, prIvacy and susTainability},
+   year={2026},
+   url={https://openreview.net/forum?id=wXi4RPrNDL}
+}
+```
 
 ## License
 
